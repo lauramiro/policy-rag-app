@@ -16,8 +16,9 @@
 - **Vector store**: Chroma, persisted locally — zero infrastructure cost,
   simple to run in CI and on Render's free tier (rebuilt at boot since
   the free-tier disk is ephemeral).
-- **Retrieval**: top-k similarity search (`k=4` default) with an MMR mode
-  available as the optional re-ranking strategy, chosen via config.
+- **Retrieval**: top-k similarity search (`k=4` default) via
+  `similarity_search_with_relevance_scores`, implemented in
+  `rag/chain.py::make_retrieve_fn`.
 - **Generation**: Groq `llama-3.3-70b-versatile`, free tier, low latency.
 - **Citations**: computed directly from the retrieved chunks used in the
   prompt context, not parsed from LLM-generated text. This guarantees

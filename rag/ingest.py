@@ -57,21 +57,29 @@ def split_long_documents(
 def build_vectorstore(corpus_dir: str, persist_dir: str, config: Config) -> Chroma:
     documents = load_corpus_documents(corpus_dir)
     documents = split_long_documents(documents, config.chunk_size, config.chunk_overlap)
-    embeddings = HuggingFaceEmbeddings(model_name=config.embedding_model)
+    embeddings = HuggingFaceEmbeddings(
+        model_name=config.embedding_model,
+        encode_kwargs={"normalize_embeddings": True},
+    )
     return Chroma.from_documents(
         documents=documents,
         embedding=embeddings,
         persist_directory=persist_dir,
         collection_name=COLLECTION_NAME,
+        collection_metadata={"hnsw:space": "cosine"},
     )
 
 
 def load_or_build_vectorstore(config: Config) -> Chroma:
-    embeddings = HuggingFaceEmbeddings(model_name=config.embedding_model)
+    embeddings = HuggingFaceEmbeddings(
+        model_name=config.embedding_model,
+        encode_kwargs={"normalize_embeddings": True},
+    )
     vectorstore = Chroma(
         persist_directory=config.chroma_dir,
         embedding_function=embeddings,
         collection_name=COLLECTION_NAME,
+        collection_metadata={"hnsw:space": "cosine"},
     )
     if vectorstore._collection.count() == 0:
         vectorstore = build_vectorstore(config.corpus_dir, config.chroma_dir, config)
