@@ -1,0 +1,8 @@
+body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+#messages { min-height: 300px; margin-bottom: 1rem; }
+.message { padding: 0.5rem 0.75rem; margin-bottom: 0.5rem; border-radius: 6px; }
+.message.user { background: #e8f0fe; text-align: right; }
+.message.assistant { background: #f1f1f1; }
+.citations { font-size: 0.8rem; color: #555; margin-top: 0.4rem; }
+#chat-form { display: flex; gap: 0.5rem; }
+#question { flex: 1; padding: 0.5rem; }
