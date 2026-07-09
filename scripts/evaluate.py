@@ -54,7 +54,11 @@ def run_evaluation(questions: list[dict], retrieve_fn, llm, judge_llm, config: C
         relevant = [
             (doc, score) for doc, score in scored_docs if score >= config.similarity_threshold
         ]
-        result = answer_question(item["question"], retrieve_fn, llm, config)
+
+        def _reuse_retrieval(_question, _docs=scored_docs):
+            return _docs
+
+        result = answer_question(item["question"], _reuse_retrieval, llm, config)
         latencies.append(time.perf_counter() - start)
 
         retrieved_doc_ids = {doc.metadata["doc_id"] for doc, _ in relevant}
@@ -73,6 +77,14 @@ def run_evaluation(questions: list[dict], retrieve_fn, llm, judge_llm, config: C
             "grounded": grounded,
             "citation_ok": citation_ok,
         })
+
+    if not rows:
+        return {
+            "rows": [],
+            "groundedness_pct": 0.0,
+            "citation_accuracy_pct": 0.0,
+            "latency": compute_latency_stats([]),
+        }
 
     groundedness_pct = round(100 * sum(r["grounded"] for r in rows) / len(rows), 1)
     citation_pct = round(100 * sum(r["citation_ok"] for r in rows) / len(rows), 1)

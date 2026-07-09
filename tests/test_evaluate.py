@@ -61,3 +61,44 @@ def test_run_evaluation_and_write_report(tmp_path):
     content = report_path.read_text(encoding="utf-8")
     assert "Groundedness" in content
     assert "q1" in content
+
+
+def test_run_evaluation_calls_retrieve_fn_once_per_question():
+    from rag.config import Config
+
+    questions = [
+        {"id": "q1", "question": "How many PTO days?", "expected_doc_id": "pto-policy", "gold_answer": "15"},
+        {"id": "q2", "question": "What is the remote work policy?", "expected_doc_id": "remote-work-policy", "gold_answer": "n/a"},
+    ]
+
+    call_count = {"n": 0}
+
+    def retrieve_fn(question):
+        from langchain_core.documents import Document
+        call_count["n"] += 1
+        doc = Document(page_content="15 PTO days per year.", metadata={"doc_id": "pto-policy", "title": "PTO"})
+        return [(doc, 0.9)]
+
+    answer_llm = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="You get 15 PTO days per year."))
+    judge_llm = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="SUPPORTED"))
+
+    run_evaluation(questions, retrieve_fn, answer_llm, judge_llm, Config())
+
+    assert call_count["n"] == len(questions)
+
+
+def test_run_evaluation_with_empty_questions_returns_zeroed_report():
+    from rag.config import Config
+
+    def retrieve_fn(question):
+        raise AssertionError("retrieve_fn should not be called for an empty question list")
+
+    answer_llm = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="unused"))
+    judge_llm = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="unused"))
+
+    report = run_evaluation([], retrieve_fn, answer_llm, judge_llm, Config())
+
+    assert report["rows"] == []
+    assert report["groundedness_pct"] == 0.0
+    assert report["citation_accuracy_pct"] == 0.0
+    assert report["latency"] == {"p50_ms": 0.0, "p95_ms": 0.0}
