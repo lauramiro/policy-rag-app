@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+chroma_db/
+local.secrets
+eval/results.md
+.pytest_cache/
