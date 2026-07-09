@@ -1,0 +1,122 @@
+[
+  {
+    "id": "q01",
+    "question": "How many PTO days do full-time employees accrue per year, and at what monthly rate?",
+    "expected_doc_id": "pto-policy",
+    "gold_answer": "15 PTO days per calendar year, credited at 1.25 days per completed month of employment."
+  },
+  {
+    "id": "q02",
+    "question": "How many unused PTO days can be carried over to the next calendar year, and by when must they be used?",
+    "expected_doc_id": "pto-policy",
+    "gold_answer": "Up to 5 unused PTO days can be carried over; carried-over days must be used by March 31st of the following year or they are forfeited permanently."
+  },
+  {
+    "id": "q03",
+    "question": "After how many months of continuous employment are employees eligible to request remote work status?",
+    "expected_doc_id": "remote-work-policy",
+    "gold_answer": "6 months of continuous employment, plus written manager approval."
+  },
+  {
+    "id": "q04",
+    "question": "What is the home office setup stipend for a newly approved fully-remote employee, and what additional monthly stipend do they receive?",
+    "expected_doc_id": "remote-work-policy",
+    "gold_answer": "A one-time $500 home office setup stipend, reimbursable within the first 60 days of approved remote status, plus an additional $30/month stipend for internet and utilities paid via payroll."
+  },
+  {
+    "id": "q05",
+    "question": "Within how many calendar days must an employee submit an expense report through Expensify, and what happens if it is submitted after 60 days?",
+    "expected_doc_id": "expense-policy",
+    "gold_answer": "Within 30 calendar days of incurring the expense; reports submitted after 60 days will not be reimbursed except with VP-level approval."
+  },
+  {
+    "id": "q06",
+    "question": "What gift value threshold triggers a disclosure requirement to a manager and Compliance under the Code of Conduct?",
+    "expected_doc_id": "code-of-conduct",
+    "gold_answer": "Employees may not accept gifts valued over $75 from vendors or clients without disclosing them to their manager and Compliance."
+  },
+  {
+    "id": "q07",
+    "question": "What are the minimum password length and rotation requirements under the Information Security Policy?",
+    "expected_doc_id": "security-policy",
+    "gold_answer": "Passwords must be at least 14 characters, including one uppercase letter, one number, and one symbol, and must be rotated every 180 days without repeating any of the last 10 passwords used."
+  },
+  {
+    "id": "q08",
+    "question": "How quickly must a suspected security incident be reported, and what is the initial triage response time during business hours?",
+    "expected_doc_id": "security-policy",
+    "gold_answer": "Suspected incidents must be reported within 1 hour of discovery via the #security-incidents Slack channel or the 24/7 hotline; the security team commits to an initial triage response within 30 minutes during business hours (2 hours after hours)."
+  },
+  {
+    "id": "q09",
+    "question": "Within how many days of joining must new hires complete Security Awareness Training and Anti-Harassment Training?",
+    "expected_doc_id": "onboarding-guide",
+    "gold_answer": "Within their first 14 days of employment (Code of Conduct training is due within 30 days)."
+  },
+  {
+    "id": "q10",
+    "question": "What milestones make up the new hire check-in schedule, and what benefit becomes available at the 90-day mark?",
+    "expected_doc_id": "onboarding-guide",
+    "gold_answer": "A 30-day check-in, a 60-day check-in, and a 90-day review; access to PTO and the 401(k) match begins at the 90-day mark upon successful completion of the introductory period."
+  },
+  {
+    "id": "q11",
+    "question": "What percentage of the employee premium does the company cover on the Silver medical plan, and what is its individual deductible?",
+    "expected_doc_id": "benefits-overview",
+    "gold_answer": "The company covers 80% of the employee premium (and 50% of dependent premiums) on the Silver plan, which carries a $1,000 individual deductible."
+  },
+  {
+    "id": "q12",
+    "question": "How much does the company match on employee 401(k) contributions?",
+    "expected_doc_id": "benefits-overview",
+    "gold_answer": "100% of employee contributions up to 4% of base salary, plus 50% of the next 2% contributed, for a maximum match of 5% of salary, vesting immediately."
+  },
+  {
+    "id": "q13",
+    "question": "How far in advance must domestic business travel be booked through the Concur travel portal?",
+    "expected_doc_id": "travel-policy",
+    "gold_answer": "At least 7 business days before departure for domestic trips (14 business days for international trips)."
+  },
+  {
+    "id": "q14",
+    "question": "What is the nightly hotel spend cap for domestic travel, and how much higher is it in designated high-cost cities?",
+    "expected_doc_id": "travel-policy",
+    "gold_answer": "$250/night in standard cities and $350/night in designated high-cost cities such as New York, San Francisco, London, and Tokyo."
+  },
+  {
+    "id": "q15",
+    "question": "How long is customer support ticket data containing personal data retained after case closure?",
+    "expected_doc_id": "data-privacy-policy",
+    "gold_answer": "24 months after case closure, after which it is automatically purged."
+  },
+  {
+    "id": "q16",
+    "question": "Within how many hours must a manager escalate a harassment complaint to HR after receiving or witnessing it?",
+    "expected_doc_id": "anti-harassment-policy",
+    "gold_answer": "Within 24 hours, regardless of whether the affected employee has asked that no action be taken."
+  },
+  {
+    "id": "q17",
+    "question": "How many paid holidays does the company observe per year, and how many additional floating holidays do full-time employees receive?",
+    "expected_doc_id": "holiday-schedule",
+    "gold_answer": "10 paid holidays per year, plus 2 floating holidays per calendar year for full-time employees."
+  },
+  {
+    "id": "q18",
+    "question": "How often do formal performance reviews occur, and what rating triggers a Performance Improvement Plan (PIP)?",
+    "expected_doc_id": "performance-review-policy",
+    "gold_answer": "Twice per year, in June and December; a rating of Needs Improvement or below automatically triggers a PIP within 10 business days of the review."
+  },
+  {
+    "id": "q19",
+    "question": "How long does a Performance Improvement Plan (PIP) run, and how often are check-ins held during it?",
+    "expected_doc_id": "performance-review-policy",
+    "gold_answer": "A PIP runs for 60 calendar days and includes weekly check-ins between the employee and manager, with HR looped in at the start."
+  },
+  {
+    "id": "q20",
+    "question": "How quickly must a departing employee return company equipment after their last day, and what happens if it is not returned within 30 days?",
+    "expected_doc_id": "equipment-offboarding-policy",
+    "gold_answer": "Within 5 business days of their last day; equipment not returned within 30 days is charged to the employee at replacement cost, deducted from final pay where permitted by law."
+  }
+]
