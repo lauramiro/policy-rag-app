@@ -31,8 +31,12 @@ answer and a refusal guardrail for out-of-corpus questions.
 ## Build the index
 
 ```bash
-python scripts/ingest.py
+python -m scripts.ingest
 ```
+
+(Run as a module, not `python scripts/ingest.py` — the latter puts
+`scripts/` rather than the project root on Python's import path, so the
+sibling `rag` package won't be found.)
 
 This reads `corpus/*.md`, chunks it, embeds it locally with
 `sentence-transformers/all-MiniLM-L6-v2`, and persists a Chroma
@@ -58,7 +62,7 @@ pytest -q
 ## Run the evaluation
 
 ```bash
-python scripts/evaluate.py
+python -m scripts.evaluate
 ```
 
 Writes `eval/results.md` with groundedness %, citation accuracy %, and
