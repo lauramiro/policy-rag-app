@@ -42,9 +42,9 @@
 
 ## Evaluation Results
 
-_Populated after running `python scripts/evaluate.py` with a real Groq API
-key — see `eval/results.md` for the generated report. Summary:_
+Populated after running `python -m scripts.evaluate` with a real Groq API
+key — see `eval/results.md` for the full per-question report. Summary:
 
-- Groundedness: TODO_FILL_AFTER_RUN%
-- Citation accuracy: TODO_FILL_AFTER_RUN%
-- Latency p50 / p95: TODO_FILL_AFTER_RUN ms / TODO_FILL_AFTER_RUN ms
+- Groundedness: 85.0%
+- Citation accuracy: 100.0%
+- Latency p50 / p95: 1486.5 ms / 2725.9 ms
