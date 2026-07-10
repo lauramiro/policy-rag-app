@@ -15,11 +15,18 @@ answer and a refusal guardrail for out-of-corpus questions.
 
    On Windows, activate with `.venv\Scripts\activate` instead.
 
+   Use Python 3.11 or 3.12 (`tokenizers` has no prebuilt wheels for 3.13+).
+
 2. Install dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
+
+   On Windows, if the install fails with `WinError 206` (filename too
+   long), PyTorch's nested files are exceeding the 260-character path
+   limit: create the venv at a shorter path (e.g. `C:\venvs\rag`) or
+   enable Windows long paths.
 
 3. Copy `local.secrets.example` to `local.secrets` and fill in your free
    Groq API key (get one at console.groq.com):

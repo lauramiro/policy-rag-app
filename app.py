@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 
 from rag.chain import answer_question, get_llm, make_retrieve_fn
 from rag.config import Config
@@ -24,6 +24,12 @@ def get_resources() -> dict:
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/corpus/<path:filename>")
+def corpus_file(filename):
+    corpus_dir = os.path.abspath(Config().corpus_dir)
+    return send_from_directory(corpus_dir, filename, mimetype="text/plain")
 
 
 @app.route("/health")

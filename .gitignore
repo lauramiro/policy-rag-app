@@ -4,5 +4,4 @@ __pycache__/
 venv/
 chroma_db/
 local.secrets
-eval/results.md
 .pytest_cache/

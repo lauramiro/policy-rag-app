@@ -16,7 +16,8 @@ class StubLLM:
 
 
 def _scored_doc(doc_id, title, text, score):
-    return (Document(page_content=text, metadata={"doc_id": doc_id, "title": title}), score)
+    metadata = {"doc_id": doc_id, "title": title, "source": f"{doc_id}.md"}
+    return (Document(page_content=text, metadata=metadata), score)
 
 
 def test_answer_question_refuses_when_nothing_relevant():
@@ -47,6 +48,7 @@ def test_answer_question_builds_citations_from_retrieved_docs():
         {
             "doc_id": "sample-a",
             "title": "Sample Policy A",
+            "source": "sample-a.md",
             "snippet": "Employees accrue 15 vacation days per year.",
         }
     ]

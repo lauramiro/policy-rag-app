@@ -16,14 +16,40 @@ def test_compute_latency_stats():
     assert stats["p95_ms"] == 500.0
 
 
-def test_check_citation_accuracy_true_when_all_citations_are_retrieved():
-    citations = [{"doc_id": "pto-policy"}]
-    assert check_citation_accuracy(citations, {"pto-policy", "remote-work-policy"}) is True
+def _retrieved_doc(doc_id, text, score=0.9):
+    from langchain_core.documents import Document
+    return (Document(page_content=text, metadata={"doc_id": doc_id, "title": doc_id}), score)
+
+
+def test_check_citation_accuracy_true_when_cited_passage_supports_answer():
+    retrieved = [_retrieved_doc("pto-policy", "15 PTO days per year.")]
+    citations = [{"doc_id": "pto-policy", "snippet": "15 PTO days per year."}]
+    judge = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="SUPPORTS"))
+
+    assert check_citation_accuracy(citations, retrieved, "You get 15 days.", judge) is True
 
 
 def test_check_citation_accuracy_false_when_citation_not_retrieved():
-    citations = [{"doc_id": "unrelated-doc"}]
-    assert check_citation_accuracy(citations, {"pto-policy"}) is False
+    retrieved = [_retrieved_doc("pto-policy", "15 PTO days per year.")]
+    citations = [{"doc_id": "unrelated-doc", "snippet": "something else"}]
+    judge = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="SUPPORTS"))
+
+    assert check_citation_accuracy(citations, retrieved, "You get 15 days.", judge) is False
+
+
+def test_check_citation_accuracy_false_when_passage_does_not_support_answer():
+    retrieved = [_retrieved_doc("holiday-schedule", "New Year's Day is a holiday.")]
+    citations = [{"doc_id": "holiday-schedule", "snippet": "New Year's Day is a holiday."}]
+    judge = SimpleNamespace(invoke=lambda prompt: SimpleNamespace(content="IRRELEVANT"))
+
+    assert check_citation_accuracy(citations, retrieved, "You get 15 PTO days.", judge) is False
+
+
+def test_check_citation_accuracy_true_when_no_citations():
+    judge = SimpleNamespace(
+        invoke=lambda prompt: (_ for _ in ()).throw(AssertionError("judge should not be called"))
+    )
+    assert check_citation_accuracy([], [], "I can only answer about our policies.", judge) is True
 
 
 def test_judge_groundedness_parses_supported_response():

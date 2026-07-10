@@ -34,7 +34,17 @@ function appendMessage(role, text, citations) {
     list.className = "citations";
     citations.forEach((citation) => {
       const item = document.createElement("li");
-      item.textContent = `${citation.title}: "${citation.snippet}"`;
+      if (citation.source) {
+        const link = document.createElement("a");
+        link.href = `/corpus/${encodeURIComponent(citation.source)}`;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = citation.title;
+        item.appendChild(link);
+      } else {
+        item.appendChild(document.createTextNode(citation.title));
+      }
+      item.appendChild(document.createTextNode(`: "${citation.snippet}"`));
       list.appendChild(item);
     });
     wrapper.appendChild(list);

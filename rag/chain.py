@@ -45,6 +45,7 @@ def _build_citations(scored_docs):
         {
             "doc_id": doc.metadata["doc_id"],
             "title": doc.metadata["title"],
+            "source": doc.metadata.get("source", ""),
             "snippet": doc.page_content[:280],
         }
         for doc, _score in scored_docs

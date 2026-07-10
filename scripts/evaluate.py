@@ -19,6 +19,17 @@ ANSWER:
 {answer}
 """
 
+CITATION_JUDGE_PROMPT = """You are grading whether the PASSAGE below supports \
+at least one factual claim made in the ANSWER. Reply with exactly one word: \
+"SUPPORTS" or "IRRELEVANT".
+
+PASSAGE:
+{passage}
+
+ANSWER:
+{answer}
+"""
+
 
 def compute_latency_stats(latencies_seconds: list[float]) -> dict:
     if not latencies_seconds:
@@ -32,10 +43,32 @@ def compute_latency_stats(latencies_seconds: list[float]) -> dict:
     }
 
 
-def check_citation_accuracy(citations: list[dict], retrieved_doc_ids: set) -> bool:
+def judge_citation_support(answer: str, passage: str, judge_llm) -> bool:
+    prompt = CITATION_JUDGE_PROMPT.format(passage=passage, answer=answer)
+    response = judge_llm.invoke(prompt)
+    return "IRRELEVANT" not in response.content.strip().upper()
+
+
+def check_citation_accuracy(
+    citations: list[dict], retrieved_docs: list, answer: str, judge_llm
+) -> bool:
+    """A citation is accurate only if it points to a passage that was actually
+    retrieved AND that passage supports at least one claim in the answer."""
     if not citations:
         return True
-    return all(citation["doc_id"] in retrieved_doc_ids for citation in citations)
+
+    for citation in citations:
+        passages = [
+            doc.page_content
+            for doc, _score in retrieved_docs
+            if doc.metadata["doc_id"] == citation["doc_id"]
+            and doc.page_content.startswith(citation["snippet"])
+        ]
+        if not passages:
+            return False
+        if not any(judge_citation_support(answer, p, judge_llm) for p in passages):
+            return False
+    return True
 
 
 def judge_groundedness(question: str, answer: str, context: str, llm) -> bool:
@@ -61,13 +94,14 @@ def run_evaluation(questions: list[dict], retrieve_fn, llm, judge_llm, config: C
         result = answer_question(item["question"], _reuse_retrieval, llm, config)
         latencies.append(time.perf_counter() - start)
 
-        retrieved_doc_ids = {doc.metadata["doc_id"] for doc, _ in relevant}
         context = "\n\n".join(doc.page_content for doc, _ in relevant)
         grounded = (
             judge_groundedness(item["question"], result["answer"], context, judge_llm)
             if relevant else True
         )
-        citation_ok = check_citation_accuracy(result["citations"], retrieved_doc_ids)
+        citation_ok = check_citation_accuracy(
+            result["citations"], relevant, result["answer"], judge_llm
+        )
 
         rows.append({
             "id": item["id"],

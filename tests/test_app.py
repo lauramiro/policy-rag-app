@@ -15,6 +15,19 @@ def test_index_renders(client):
     assert b"Company Policy Assistant" in response.data
 
 
+def test_corpus_serves_source_document(client):
+    response = client.get("/corpus/pto-policy.md")
+
+    assert response.status_code == 200
+    assert response.mimetype == "text/plain"
+
+
+def test_corpus_returns_404_for_missing_document(client):
+    response = client.get("/corpus/does-not-exist.md")
+
+    assert response.status_code == 404
+
+
 def test_chat_rejects_empty_question(client):
     response = client.post("/chat", json={"question": "   "})
 
