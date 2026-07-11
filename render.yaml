@@ -3,12 +3,21 @@ services:
     name: policy-rag-app
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python -m scripts.ingest
+    buildCommand: pip install -r requirements.txt && HF_HUB_OFFLINE=0 python -m scripts.ingest
     startCommand: gunicorn --config gunicorn.conf.py app:app
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
+      # Render only carries the project directory from build into runtime, so
+      # the default ~/.cache/huggingface model cache is lost and every cold
+      # start re-downloads the embedding model. Cache it inside the project
+      # dir and run fully offline at runtime (build overrides HF_HUB_OFFLINE
+      # inline to do the one-time download).
+      - key: HF_HOME
+        value: /opt/render/project/src/.hf-cache
+      - key: HF_HUB_OFFLINE
+        value: "1"
       - key: GROQ_API_KEY
         sync: false
       - key: LLM_MODEL
