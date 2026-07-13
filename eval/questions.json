@@ -118,5 +118,35 @@
     "question": "How quickly must a departing employee return company equipment after their last day, and what happens if it is not returned within 30 days?",
     "expected_doc_id": "equipment-offboarding-policy",
     "gold_answer": "Within 5 business days of their last day; equipment not returned within 30 days is charged to the employee at replacement cost, deducted from final pay where permitted by law."
+  },
+  {
+    "id": "q21",
+    "question": "How many weeks of paid parental leave do birthing parents receive, and at what percentage of base salary?",
+    "expected_doc_id": "parental-leave-policy",
+    "gold_answer": "Birthing parents receive 16 weeks of paid parental leave at 100% of base salary; non-birthing, adoptive, and foster parents receive 8 weeks at 100%."
+  },
+  {
+    "id": "q22",
+    "question": "What is the annual professional development budget for a full-time employee, and does unused budget carry over to the next year?",
+    "expected_doc_id": "learning-development-policy",
+    "gold_answer": "$1,500 per calendar year for full-time employees; unused budget does not carry over and is forfeited on December 31st."
+  },
+  {
+    "id": "q23",
+    "question": "What must an employee do before using a personal mobile device to access company email, and what does that system enforce?",
+    "expected_doc_id": "acceptable-use-policy",
+    "gold_answer": "Enroll the device in the company's mobile device management (MDM) system, which enforces a screen-lock passcode and enables remote wipe of company data."
+  },
+  {
+    "id": "q24",
+    "question": "Within how many days of hire must employees complete inclusion and anti-bias training, and how often afterward?",
+    "expected_doc_id": "dei-policy",
+    "gold_answer": "Within 60 days of hire, and annually thereafter; people managers complete additional inclusive-management training."
+  },
+  {
+    "id": "q25",
+    "question": "Within how many hours must a workplace injury or near-miss be reported?",
+    "expected_doc_id": "workplace-safety-policy",
+    "gold_answer": "Within 24 hours of the incident to the employee's manager and HR, regardless of severity; serious injuries requiring emergency care are reported immediately after care is obtained."
   }
 ]

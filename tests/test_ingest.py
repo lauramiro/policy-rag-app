@@ -22,3 +22,13 @@ def test_build_vectorstore_indexes_all_chunks(tmp_path):
     assert vectorstore._collection.count() >= 2
     results = vectorstore.similarity_search("How many vacation days do I get?", k=1)
     assert results[0].metadata["doc_id"] == "sample-a"
+
+
+def test_build_vectorstore_is_idempotent(tmp_path):
+    config = Config()
+    persist_dir = str(tmp_path / "chroma_idem")
+
+    first = build_vectorstore("tests/fixtures", persist_dir, config)._collection.count()
+    second = build_vectorstore("tests/fixtures", persist_dir, config)._collection.count()
+
+    assert first == second

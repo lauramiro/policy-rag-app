@@ -28,3 +28,7 @@ class Config:
     )
     max_answer_tokens: int = field(default_factory=lambda: int(_env("MAX_ANSWER_TOKENS", "400")))
     max_answer_words: int = field(default_factory=lambda: int(_env("MAX_ANSWER_WORDS", "200")))
+    citation_score_ratio: float = field(
+        default_factory=lambda: float(_env("CITATION_SCORE_RATIO", "0.9"))
+    )
+    max_citations: int = field(default_factory=lambda: int(_env("MAX_CITATIONS", "3")))

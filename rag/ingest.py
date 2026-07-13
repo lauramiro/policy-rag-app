@@ -54,6 +54,15 @@ def split_long_documents(
     return result
 
 
+def _new_chroma(persist_dir: str, embeddings) -> Chroma:
+    return Chroma(
+        persist_directory=persist_dir,
+        embedding_function=embeddings,
+        collection_name=COLLECTION_NAME,
+        collection_metadata={"hnsw:space": "cosine"},
+    )
+
+
 def build_vectorstore(corpus_dir: str, persist_dir: str, config: Config) -> Chroma:
     documents = load_corpus_documents(corpus_dir)
     documents = split_long_documents(documents, config.chunk_size, config.chunk_overlap)
@@ -61,13 +70,14 @@ def build_vectorstore(corpus_dir: str, persist_dir: str, config: Config) -> Chro
         model_name=config.embedding_model,
         encode_kwargs={"normalize_embeddings": True},
     )
-    return Chroma.from_documents(
-        documents=documents,
-        embedding=embeddings,
-        persist_directory=persist_dir,
-        collection_name=COLLECTION_NAME,
-        collection_metadata={"hnsw:space": "cosine"},
-    )
+    # Rebuild from scratch so re-running ingestion is idempotent rather than
+    # appending a second copy of every chunk to the existing collection.
+    store = _new_chroma(persist_dir, embeddings)
+    if store._collection.count() > 0:
+        store.delete_collection()
+        store = _new_chroma(persist_dir, embeddings)
+    store.add_documents(documents)
+    return store
 
 
 def load_or_build_vectorstore(config: Config) -> Chroma:
@@ -75,12 +85,7 @@ def load_or_build_vectorstore(config: Config) -> Chroma:
         model_name=config.embedding_model,
         encode_kwargs={"normalize_embeddings": True},
     )
-    vectorstore = Chroma(
-        persist_directory=config.chroma_dir,
-        embedding_function=embeddings,
-        collection_name=COLLECTION_NAME,
-        collection_metadata={"hnsw:space": "cosine"},
-    )
+    vectorstore = _new_chroma(config.chroma_dir, embeddings)
     if vectorstore._collection.count() == 0:
         vectorstore = build_vectorstore(config.corpus_dir, config.chroma_dir, config)
     return vectorstore

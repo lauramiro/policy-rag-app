@@ -7,12 +7,14 @@ EXPECTED_DOC_IDS = {
     "code-of-conduct", "onboarding-guide", "benefits-overview", "travel-policy",
     "data-privacy-policy", "anti-harassment-policy", "holiday-schedule",
     "performance-review-policy", "equipment-offboarding-policy",
+    "parental-leave-policy", "learning-development-policy",
+    "acceptable-use-policy", "dei-policy", "workplace-safety-policy",
 }
 
 
 def test_corpus_files_have_required_frontmatter():
     paths = sorted(Path("corpus").glob("*.md"))
-    assert len(paths) == 13
+    assert len(paths) == 18
 
     seen_ids = set()
     for path in paths:

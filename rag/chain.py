@@ -52,11 +52,48 @@ def _build_citations(scored_docs):
     ]
 
 
+def _dedupe_by_content(scored_docs):
+    seen = set()
+    result = []
+    for doc, score in scored_docs:
+        if doc.page_content in seen:
+            continue
+        seen.add(doc.page_content)
+        result.append((doc, score))
+    return result
+
+
+def _select_citations(scored_docs, config: Config):
+    """Cite only the source(s) that actually support the answer, rather than the
+    whole retrieval set. Dedupe to the best-scoring chunk per document, keep the
+    top source, plus any other document whose best chunk scores within
+    ``citation_score_ratio`` of the top score (capped at ``max_citations``)."""
+    if not scored_docs:
+        return []
+
+    ordered = sorted(scored_docs, key=lambda ds: ds[1], reverse=True)
+    cutoff = ordered[0][1] * config.citation_score_ratio
+
+    selected = []
+    seen_docs = set()
+    for doc, score in ordered:
+        doc_id = doc.metadata["doc_id"]
+        if doc_id in seen_docs:
+            continue
+        if selected and score < cutoff:
+            continue
+        seen_docs.add(doc_id)
+        selected.append((doc, score))
+        if len(selected) >= config.max_citations:
+            break
+    return selected
+
+
 def answer_question(question: str, retrieve_fn, llm, config: Config) -> dict:
     scored_docs = retrieve_fn(question)
-    relevant = [
-        (doc, score) for doc, score in scored_docs if score >= config.similarity_threshold
-    ]
+    relevant = _dedupe_by_content(
+        [(doc, score) for doc, score in scored_docs if score >= config.similarity_threshold]
+    )
 
     if not relevant:
         return {"answer": REFUSAL_MESSAGE, "citations": []}
@@ -73,4 +110,7 @@ def answer_question(question: str, retrieve_fn, llm, config: Config) -> dict:
     if answer_text == REFUSAL_MESSAGE:
         return {"answer": REFUSAL_MESSAGE, "citations": []}
 
-    return {"answer": answer_text, "citations": _build_citations(relevant)}
+    return {
+        "answer": answer_text,
+        "citations": _build_citations(_select_citations(relevant, config)),
+    }

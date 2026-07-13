@@ -53,3 +53,39 @@ def test_answer_question_builds_citations_from_retrieved_docs():
         }
     ]
     assert llm.calls == 1
+
+
+def test_citations_dedupe_and_drop_weakly_relevant_sources():
+    llm = StubLLM("PTO accrues at 1.25 days per month.")
+
+    def retrieve_fn(question):
+        return [
+            _scored_doc("pto-policy", "PTO Policy", "PTO accrues 15 days per year.", 0.84),
+            _scored_doc("pto-policy", "PTO Policy", "PTO accrues 15 days per year.", 0.84),
+            _scored_doc("pto-policy", "PTO Policy", "Carryover is capped at 5 days.", 0.77),
+            _scored_doc("expense-policy", "Expense Policy", "Submit within 30 days.", 0.50),
+        ]
+
+    from rag.config import Config
+    result = answer_question("How does PTO accrue?", retrieve_fn, llm, Config())
+
+    # Exact-duplicate chunk removed, same-doc lower chunk collapsed to one
+    # citation, and the weakly-related other document dropped below the cutoff.
+    assert len(result["citations"]) == 1
+    assert result["citations"][0]["doc_id"] == "pto-policy"
+    assert result["citations"][0]["snippet"].startswith("PTO accrues 15 days per year.")
+
+
+def test_citations_keep_multiple_documents_scoring_near_the_top():
+    llm = StubLLM("Both policies apply here.")
+
+    def retrieve_fn(question):
+        return [
+            _scored_doc("policy-a", "Policy A", "Rule from A.", 0.80),
+            _scored_doc("policy-b", "Policy B", "Rule from B.", 0.78),
+        ]
+
+    from rag.config import Config
+    result = answer_question("What applies?", retrieve_fn, llm, Config())
+
+    assert {c["doc_id"] for c in result["citations"]} == {"policy-a", "policy-b"}
