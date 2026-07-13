@@ -20,7 +20,10 @@
 - **Retrieval**: top-k similarity search (`k=4` default) via
   `similarity_search_with_relevance_scores`, implemented in
   `rag/chain.py::make_retrieve_fn`.
-- **Generation**: Groq `llama-3.3-70b-versatile`, free tier, low latency.
+- **Generation**: Groq `meta-llama/llama-4-scout-17b-16e-instruct` (Llama 4
+  Scout), free tier — capable, low latency, and instruct-tuned for reliable
+  format compliance in both answers and the evaluation judge. The model is
+  configurable via `LLM_MODEL`; any Groq chat model works.
 - **Citations**: computed directly from the retrieved chunks, not parsed
   from LLM-generated text. This guarantees the cited passages are the ones
   the model actually saw, rather than depending on the LLM to format
@@ -55,20 +58,15 @@
 ## Evaluation Results
 
 Produced by running `python -m scripts.evaluate` with a real Groq API key
-against the strict passage-support citation metric — see `eval/results.md`
-for the full per-question report. Summary over the core 20-question set:
+against the strict passage-support citation metric, over the full
+25-question set covering all 18 policies — see `eval/results.md` for the
+per-question report.
 
-- Groundedness: 85.0%
-- Citation accuracy: 85.0%
-- Latency p50 / p95: 2265.0 ms / 2555.3 ms
+- Groundedness: 92.0%
+- Citation accuracy: 84.0%
+- Latency p50 / p95: 2248.8 ms / 2442.2 ms
 
-The citation and groundedness misses concentrate on multi-part questions
-where the answer combines facts spanning more than one retrieved passage —
-the honest result of scoring each citation for passage-level support
-rather than mere retrieval membership.
-
-> The corpus was later expanded to 18 documents and the eval set to 25
-> questions (one per topic). Re-run `python -m scripts.evaluate` to
-> regenerate these numbers over the full set; the refresh was blocked on
-> 2026-07-13 by the Groq free-tier daily token cap and should be run before
-> final submission.
+The handful of misses concentrate on multi-part questions where the answer
+combines facts spanning more than one retrieved passage — the honest
+result of scoring each citation for passage-level support rather than mere
+retrieval membership.

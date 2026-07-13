@@ -13,7 +13,7 @@ def test_config_defaults(monkeypatch):
     config = Config()
 
     assert config.groq_api_key == "test-key"
-    assert config.llm_model == "llama-3.3-70b-versatile"
+    assert config.llm_model == "meta-llama/llama-4-scout-17b-16e-instruct"
     assert config.embedding_model == "sentence-transformers/all-MiniLM-L6-v2"
     assert config.corpus_dir == "corpus"
     assert config.chroma_dir == "chroma_db"

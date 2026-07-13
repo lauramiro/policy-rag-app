@@ -13,7 +13,9 @@ def _env(key: str, default: str) -> str:
 @dataclass
 class Config:
     groq_api_key: str = field(default_factory=lambda: _env("GROQ_API_KEY", "test-key"))
-    llm_model: str = field(default_factory=lambda: _env("LLM_MODEL", "llama-3.3-70b-versatile"))
+    llm_model: str = field(
+        default_factory=lambda: _env("LLM_MODEL", "meta-llama/llama-4-scout-17b-16e-instruct")
+    )
     embedding_model: str = field(
         default_factory=lambda: _env("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
     )
